@@ -1,3 +1,9 @@
+import { SuperheroList } from '../features/superhero-list'
+
 export const SuperheroListPage = () => {
-  return <div>Superhero List Page</div>
+  return (
+    <section className="w-full flex justify-center">
+      <SuperheroList />
+    </section>
+  )
 }
