@@ -1,6 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import type { Superhero } from './types'
+import type { Superhero, SuperheroListItem } from './types'
 import axiosInstance from '@/app/api/axios'
+
+interface SuperheroesListResponse {
+  superheroes: SuperheroListItem[]
+  totalPages: number
+  totalItems: number
+  currentPage: number
+}
 
 export const fetchSuperheroes = createAsyncThunk(
   'superheroes/fetch-superheroes',
@@ -8,7 +15,7 @@ export const fetchSuperheroes = createAsyncThunk(
     const response = await axiosInstance.get(
       `/superheroes?page=${page}&limit=${limit}`,
     )
-    return response.data.data as Superhero[]
+    return response.data as SuperheroesListResponse
   },
 )
 

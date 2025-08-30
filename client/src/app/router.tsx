@@ -1,18 +1,30 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { SuperheroListPage } from '@/pages/superhero-list-page'
-import { SuperheroAddPage } from '@/pages/superhero-add-page'
-import { SuperheroEditPage } from '@/pages/superhero-edit-page'
-import { SuperheroDetailsPage } from '@/pages/superhero-details-page'
+import { AppSidebar } from '@/shared/components/lauout/app-sidebar'
+import { SidebarProvider } from '@/shared/components/ui/sidebar'
+import { APP_ROUTES } from '@/shared/constants/routes'
+import { PageLayout } from '@/shared/components/lauout/page-layout'
 
 const AppRoutes = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<SuperheroListPage />} />
-        <Route path="/superhero/:id" element={<SuperheroDetailsPage />} />
-        <Route path="/add" element={<SuperheroAddPage />} />
-        <Route path="/edit/:id" element={<SuperheroEditPage />} />
-      </Routes>
+      <SidebarProvider>
+        <AppSidebar />
+        <div className="flex w-full">
+          <Routes>
+            {APP_ROUTES.map(route => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  <PageLayout title={route.title}>
+                    <route.component />
+                  </PageLayout>
+                }
+              />
+            ))}
+          </Routes>
+        </div>
+      </SidebarProvider>
     </Router>
   )
 }

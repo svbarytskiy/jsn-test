@@ -7,3 +7,9 @@ export interface Superhero {
   catch_phrase: string
   images: string[]
 }
+
+export interface SuperheroListItem {
+  _id: string
+  nickname: string
+  images: string
+}
