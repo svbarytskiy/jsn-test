@@ -26,12 +26,12 @@
   },
   "lint-staged": {
     "server/**/*.{js,ts}": [
-      "eslint --fix",
-      "prettier --write"
+      "npx eslint --config server/eslint.config.js --fix",
+      "npx prettier --write"
     ],
     "client/**/*.{js,ts,jsx,tsx}": [
-      "eslint --fix",
-      "prettier --write"
+      "npx eslint --config client/eslint.config.js --fix",
+      "npx prettier --write"
     ]
   }
 }

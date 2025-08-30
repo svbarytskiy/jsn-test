@@ -1,13 +1,5 @@
-import { Schema, model, Document } from 'mongoose';
-
-export interface ISuperhero extends Document {
-  nickname: string;
-  real_name: string;
-  origin_description: string;
-  superpowers: string[];
-  catch_phrase: string;
-  images: string[];
-}
+import { ISuperhero } from '@/types/superhero';
+import { Schema, model } from 'mongoose';
 
 const SuperheroSchema = new Schema<ISuperhero>(
   {

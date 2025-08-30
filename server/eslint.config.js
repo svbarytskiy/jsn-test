@@ -14,13 +14,10 @@ const compat = new FlatCompat({
 });
 
 export default [
-  {   
-     ignores: ['dist/', 'node_modules/'],
+  {
+    ignores: ['dist/', 'node_modules/'],
   },
-  ...compat.extends(
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-  ),
+  ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended'),
   {
     files: ['**/*.ts'],
     languageOptions: {
@@ -29,6 +26,7 @@ export default [
         project: './tsconfig.json',
         ecmaVersion: 'latest',
         sourceType: 'module',
+        tsconfigRootDir: __dirname,
       },
     },
     plugins: {
