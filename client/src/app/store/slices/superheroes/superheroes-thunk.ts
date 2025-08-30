@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
 import type { Superhero } from './types'
+import axiosInstance from '@/app/api/axios'
 
 export const fetchSuperheroes = createAsyncThunk(
   'superheroes/fetch-superheroes',
   async ({ page, limit }: { page: number; limit: number }) => {
-    const response = await axios.get(
-      `http://localhost:3000/superheroes?page=${page}&limit=${limit}`,
+    const response = await axiosInstance.get(
+      `/superheroes?page=${page}&limit=${limit}`,
     )
     return response.data.data as Superhero[]
   },
@@ -15,7 +15,7 @@ export const fetchSuperheroes = createAsyncThunk(
 export const fetchSuperheroById = createAsyncThunk(
   'superheroes/fetch-superhero-by-id',
   async (id: string) => {
-    const response = await axios.get(`http://localhost:3000/superheroes/${id}`)
+    const response = await axiosInstance.get(`/superheroes/${id}`)
     return response.data.data as Superhero
   },
 )
@@ -23,10 +23,7 @@ export const fetchSuperheroById = createAsyncThunk(
 export const createSuperhero = createAsyncThunk(
   'superheroes/create-superhero',
   async (superheroData: FormData) => {
-    const response = await axios.post(
-      'http://localhost:3000/superheroes',
-      superheroData,
-    )
+    const response = await axiosInstance.post('/superheroes', superheroData)
     return response.data.data as Superhero
   },
 )
@@ -34,8 +31,8 @@ export const createSuperhero = createAsyncThunk(
 export const updateSuperhero = createAsyncThunk(
   'superheroes/update-superhero',
   async ({ id, superheroData }: { id: string; superheroData: FormData }) => {
-    const response = await axios.put(
-      `http://localhost:3000/superheroes/${id}`,
+    const response = await axiosInstance.put(
+      `/superheroes/${id}`,
       superheroData,
     )
     return response.data.data as Superhero
@@ -45,7 +42,7 @@ export const updateSuperhero = createAsyncThunk(
 export const deleteSuperhero = createAsyncThunk(
   'superheroes/delete-superhero',
   async (id: string) => {
-    await axios.delete(`http://localhost:3000/superheroes/${id}`)
+    await axiosInstance.delete(`/superheroes/${id}`)
     return id
   },
 )

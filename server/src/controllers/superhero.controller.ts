@@ -10,6 +10,10 @@ import superheroService from '@/services/superhero.service';
 import { UploadedFile } from 'express-fileupload';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const currentDirname = path.dirname(__filename);
 
 class SuperheroController {
   public getSuperheroes = async (
@@ -48,32 +52,58 @@ class SuperheroController {
     try {
       const superheroData: SuperheroRequestBody = req.body;
       const images: string[] = [];
+      console.log('Received superhero data:', superheroData);
+      const superpowersArray: string[] = Array.isArray(superheroData.superpowers)
+        ? superheroData.superpowers
+        : JSON.parse(superheroData.superpowers);
+      console.log('Parsed superpowers:', superpowersArray);
 
-      if (req.files && typeof req.files === 'object') {
+      if (req.files && typeof req.files === 'object' && req.files.images) {
         const filesToProcess: UploadedFile[] = Array.isArray(req.files.images)
           ? req.files.images
           : [req.files.images];
+        console.log(`Знайдено ${filesToProcess.length} файлів для обробки.`);
 
         for (const file of filesToProcess) {
           const superheroNickname: string = superheroData.nickname
             .replace(/\s+/g, '-')
             .toLowerCase();
           const destinationPath: string = path.join(
-            __dirname,
+            currentDirname,
             '../../public/images/superheroes',
             superheroNickname
           );
+          console.log('Призначення файлу:', destinationPath);
 
           if (!fs.existsSync(destinationPath)) {
+            console.log(`Папка не існує. Створення: ${destinationPath}`);
             fs.mkdirSync(destinationPath, { recursive: true });
           }
+
           const uniqueFileName: string = `${Date.now()}-${file.name.replace(/\s/g, '-')}`;
           const filePath: string = path.join(destinationPath, uniqueFileName);
-          await file.mv(filePath);
-          images.push(`/images/superheroes/${superheroNickname}/${uniqueFileName}`);
+
+          try {
+            await file.mv(filePath);
+            console.log(`Файл "${file.name}" успішно збережено за шляхом: ${filePath}`);
+            images.push(`/images/superheroes/${superheroNickname}/${uniqueFileName}`);
+          } catch (mvError) {
+            console.error(`Помилка під час переміщення файлу "${file.name}":`, mvError);
+            throw new Error('Failed to move file');
+          }
         }
+      } else {
+        console.log('Немає файлів для обробки.');
       }
-      const newSuperhero = await superheroService.createSuperhero({ ...superheroData, images });
+
+      console.log('all good');
+
+      const newSuperhero = await superheroService.createSuperhero({
+        ...superheroData,
+        superpowers: superpowersArray,
+        images,
+      });
+
       res.status(201).json({ message: 'Superhero created successfully', data: newSuperhero });
     } catch (error) {
       next(error);

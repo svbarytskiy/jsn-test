@@ -52,6 +52,14 @@ export default tseslint.config([
           unnamedComponents: 'arrow-function',
         },
       ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
     },
     languageOptions: {
       ecmaVersion: 2020,

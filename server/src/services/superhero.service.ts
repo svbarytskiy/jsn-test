@@ -31,6 +31,7 @@ class SuperheroService {
   }
 
   public async createSuperhero(superheroData: ISuperhero) {
+    console.log('all good 2');
     return Superhero.create(superheroData);
   }
 

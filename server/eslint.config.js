@@ -36,6 +36,7 @@ export default [
       ...tsEslint.configs['recommended-requiring-type-checking'].rules,
       '@typescript-eslint/no-unused-vars': 'error',
       'no-console': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
     },
   },
   prettierConfig,
