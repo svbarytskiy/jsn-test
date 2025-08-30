@@ -1,7 +1,7 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import { SuperheroCard } from './components/superhero-card'
-import { Button } from '../../shared/components/ui/button'
+import { Button } from '@/shared/components/ui/button'
 
 const MOCK_SUPERHEROES = [
   {

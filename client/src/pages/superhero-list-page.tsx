@@ -1,4 +1,4 @@
-import { SuperheroList } from '../features/superhero-list'
+import { SuperheroList } from '@/features/superhero-list'
 
 export const SuperheroListPage = () => {
   return (
