@@ -19,10 +19,10 @@ export const fetchSuperheroes = createAsyncThunk(
   },
 )
 
-export const fetchSuperheroById = createAsyncThunk(
+export const fetchSuperheroByNickname = createAsyncThunk(
   'superheroes/fetch-superhero-by-id',
-  async (id: string) => {
-    const response = await axiosInstance.get(`/superheroes/${id}`)
+  async (nickname: string) => {
+    const response = await axiosInstance.get(`/superheroes/${nickname}`)
     return response.data.data as Superhero
   },
 )
@@ -37,19 +37,25 @@ export const createSuperhero = createAsyncThunk(
 
 export const updateSuperhero = createAsyncThunk(
   'superheroes/update-superhero',
-  async ({ id, superheroData }: { id: string; superheroData: FormData }) => {
+  async ({
+    nickname,
+    superheroData,
+  }: {
+    nickname: string
+    superheroData: FormData
+  }) => {
     const response = await axiosInstance.put(
-      `/superheroes/${id}`,
+      `/superheroes/${nickname}`,
       superheroData,
     )
-    return response.data.data as Superhero
+    return response.data as Superhero
   },
 )
 
 export const deleteSuperhero = createAsyncThunk(
   'superheroes/delete-superhero',
-  async (id: string) => {
-    await axiosInstance.delete(`/superheroes/${id}`)
-    return id
+  async (nickname: string) => {
+    await axiosInstance.delete(`/superheroes/${nickname}`)
+    return nickname
   },
 )

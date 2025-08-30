@@ -3,7 +3,7 @@ import type { Superhero, SuperheroListItem } from './types'
 import {
   createSuperhero,
   deleteSuperhero,
-  fetchSuperheroById,
+  fetchSuperheroByNickname,
   fetchSuperheroes,
   updateSuperhero,
 } from './superheroes-thunk'
@@ -63,18 +63,18 @@ export const superheroesSlice = createSlice({
         state.loading = false
         state.error = action.error.message || 'Failed to fetch superheroes'
       })
-      .addCase(fetchSuperheroById.pending, state => {
+      .addCase(fetchSuperheroByNickname.pending, state => {
         state.loading = true
         state.error = null
       })
       .addCase(
-        fetchSuperheroById.fulfilled,
+        fetchSuperheroByNickname.fulfilled,
         (state, action: PayloadAction<Superhero>) => {
           state.loading = false
           state.selectedSuperhero = action.payload
         },
       )
-      .addCase(fetchSuperheroById.rejected, (state, action) => {
+      .addCase(fetchSuperheroByNickname.rejected, (state, action) => {
         state.loading = false
         state.error =
           action.error.message || 'Failed to fetch superhero details'
@@ -88,15 +88,16 @@ export const superheroesSlice = createSlice({
       .addCase(
         updateSuperhero.fulfilled,
         (state, action: PayloadAction<Superhero>) => {
-          if (state.selectedSuperhero?._id === action.payload._id) {
+          if (state.selectedSuperhero?.nickname === action.payload.nickname) {
             state.selectedSuperhero = action.payload
           }
         },
       )
       .addCase(
         deleteSuperhero.fulfilled,
-        (state, _action: PayloadAction<string>) => {
-          if (state.list.length === 1 && state.currentPage > 1) {
+        (state, action: PayloadAction<string>) => {
+          state.list = state.list.filter(sh => sh.nickname !== action.payload)
+          if (state.list.length === 0 && state.currentPage > 1) {
             state.currentPage -= 1
           }
         },

@@ -18,7 +18,7 @@ export type SuperheroRequestBody = Omit<ISuperhero, 'images'> & {
 };
 
 export interface SuperheroRequestParams {
-  id: string;
+  nickname: string;
 }
 
 export interface PaginationRequestQuery {

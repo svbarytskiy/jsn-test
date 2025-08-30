@@ -15,12 +15,12 @@ export const APP_ROUTES = [
     component: SuperheroAddPage,
   },
   {
-    path: '/superhero/:id',
+    path: '/superhero/:nickname',
     title: 'Details of Superhero',
     component: SuperheroDetailsPage,
   },
   {
-    path: '/edit/:id',
+    path: '/edit/:nickname',
     title: 'Edit Superhero',
     component: SuperheroEditPage,
   },

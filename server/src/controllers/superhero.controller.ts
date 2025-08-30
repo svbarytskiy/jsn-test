@@ -31,18 +31,18 @@ class SuperheroController {
     }
   };
 
-  public getSuperhero = async (
+  public getSuperheroByNickname = async (
     req: Request<SuperheroRequestParams>,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
-      const superhero = await superheroService.getSuperheroById(id);
+      const { nickname } = req.params;
+      const superhero = await superheroService.getSuperheroNickName(nickname);
       if (!superhero) {
         return res.status(404).json({ message: 'Superhero not found' });
       }
-      res.status(200).json({ data: superhero });
+      res.status(200).json(superhero);
     } catch (error) {
       next(error);
     }
@@ -116,7 +116,7 @@ class SuperheroController {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
+      const { nickname } = req.params;
       const { imagesToKeep, ...updatedData } = req.body;
       let newImages: UploadedFile[] = [];
 
@@ -125,7 +125,7 @@ class SuperheroController {
       }
 
       const updatedSuperhero = await superheroService.updateSuperhero({
-        id,
+        nickname,
         updatedData,
         imagesToKeep,
         newImages,
@@ -147,8 +147,8 @@ class SuperheroController {
     next: NextFunction
   ) => {
     try {
-      const { id } = req.params;
-      const deletedSuperhero = await superheroService.deleteSuperhero(id);
+      const { nickname } = req.params;
+      const deletedSuperhero = await superheroService.deleteSuperhero(nickname);
 
       if (!deletedSuperhero) {
         return res.status(404).json({ message: 'Superhero not found' });

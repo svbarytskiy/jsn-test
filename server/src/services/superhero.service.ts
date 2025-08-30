@@ -30,6 +30,10 @@ class SuperheroService {
     return Superhero.findById(id);
   }
 
+  public async getSuperheroNickName(nickName: string) {
+    return Superhero.findOne({ nickname: nickName });
+  }
+
   public async createSuperhero(superheroData: ISuperhero) {
     console.log('all good 2');
     return Superhero.create(superheroData);
@@ -40,17 +44,17 @@ class SuperheroService {
   }
 
   public async updateSuperhero({
-    id,
+    nickname,
     updatedData,
     imagesToKeep = [],
     newImages = [],
   }: {
-    id: string;
+    nickname: string;
     updatedData: Partial<ISuperhero>;
     imagesToKeep?: string[];
     newImages?: UploadedFile[];
   }) {
-    const existingSuperhero = await Superhero.findById(id);
+    const existingSuperhero = await Superhero.findOne({ nickname: nickname });
 
     if (!existingSuperhero) {
       return null;
@@ -94,7 +98,11 @@ class SuperheroService {
 
     const finalImages = [...(imagesToKeep || []), ...newImagePaths];
 
-    return Superhero.findByIdAndUpdate(id, { ...updatedData, images: finalImages }, { new: true });
+    return Superhero.findOneAndUpdate(
+      { nickname },
+      { ...updatedData, images: finalImages },
+      { new: true }
+    );
   }
 }
 

@@ -6,8 +6,8 @@ const router: Router = Router();
 router.get('/', SuperheroController.getSuperheroes.bind(SuperheroController) as RequestHandler);
 
 router.get(
-  '/:id',
-  SuperheroController.getSuperhero.bind(
+  '/:nickname',
+  SuperheroController.getSuperheroByNickname.bind(
     SuperheroController
   ) as RequestHandler<SuperheroRequestParams>
 );
@@ -15,14 +15,14 @@ router.get(
 router.post('/', SuperheroController.createSuperhero.bind(SuperheroController) as RequestHandler);
 
 router.put(
-  '/:id',
+  '/:nickname',
   SuperheroController.updateSuperhero.bind(
     SuperheroController
   ) as RequestHandler<SuperheroRequestParams>
 );
 
 router.delete(
-  '/:id',
+  '/:nickname',
   SuperheroController.deleteSuperhero.bind(
     SuperheroController
   ) as RequestHandler<SuperheroRequestParams>
