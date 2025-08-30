@@ -20,10 +20,10 @@ export const fetchSuperheroes = createAsyncThunk(
 )
 
 export const fetchSuperheroByNickname = createAsyncThunk(
-  'superheroes/fetch-superhero-by-id',
+  'superheroes/fetch-superhero-by-nickname',
   async (nickname: string) => {
     const response = await axiosInstance.get(`/superheroes/${nickname}`)
-    return response.data.data as Superhero
+    return response.data as Superhero
   },
 )
 

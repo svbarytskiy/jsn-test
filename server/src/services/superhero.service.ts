@@ -39,8 +39,9 @@ class SuperheroService {
     return Superhero.create(superheroData);
   }
 
-  public async deleteSuperhero(id: string) {
-    return Superhero.findByIdAndDelete(id);
+  public async deleteSuperhero(nickname: string): Promise<ISuperhero | null> {
+    const deletedSuperhero = await Superhero.findOneAndDelete({ nickname });
+    return deletedSuperhero;
   }
 
   public async updateSuperhero({

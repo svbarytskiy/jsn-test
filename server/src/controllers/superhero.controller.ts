@@ -156,13 +156,15 @@ class SuperheroController {
 
       const superheroNickname = deletedSuperhero.nickname.replace(/\s+/g, '-').toLowerCase();
       const destinationPath = path.join(
-        __dirname,
+        currentDirname,
         '../../public/images/superheroes',
         superheroNickname
       );
 
       if (fs.existsSync(destinationPath)) {
         fs.rmSync(destinationPath, { recursive: true, force: true });
+      } else {
+        console.warn(`Directory not found: ${destinationPath}`);
       }
 
       res.status(200).json({ message: 'Superhero deleted successfully', data: deletedSuperhero });
