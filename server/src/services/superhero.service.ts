@@ -1,5 +1,5 @@
 import { Superhero } from '@/models/superhero-model';
-import { ISuperhero } from '@/types/superhero';
+import { ISuperhero, SuperheroRequestBody } from '@/types/superhero';
 import path from 'path';
 import fs from 'fs';
 import { UploadedFile } from 'express-fileupload';
@@ -38,13 +38,61 @@ class SuperheroService {
     return Superhero.findOne({ nickname: nickName });
   }
 
-  public async createSuperhero(superheroData: ISuperhero) {
-    console.log('all good 2');
-    return Superhero.create(superheroData);
+  public async createSuperhero(
+    superheroData: SuperheroRequestBody,
+    newImages: UploadedFile[] = []
+  ) {
+    const superheroNickname = superheroData.nickname.replace(/\s+/g, '-').toLowerCase();
+    const destinationPath = path.join(
+      currentDirname,
+      '../../public/images/superheroes',
+      superheroNickname
+    );
+    const images: string[] = [];
+
+    if (newImages.length > 0) {
+      if (!fs.existsSync(destinationPath)) {
+        fs.mkdirSync(destinationPath, { recursive: true });
+      }
+
+      for (const file of newImages) {
+        const uniqueFileName = `${Date.now()}-${file.name.replace(/\s/g, '-')}`;
+        const filePath = path.join(destinationPath, uniqueFileName);
+
+        try {
+          await file.mv(filePath);
+          images.push(`/images/superheroes/${superheroNickname}/${uniqueFileName}`);
+        } catch (mvError) {
+          console.error(`Error moving file "${file.name}":`, mvError);
+          if (fs.existsSync(destinationPath) && fs.readdirSync(destinationPath).length === 0) {
+            fs.rmdirSync(destinationPath);
+          }
+          throw new Error('Failed to save images.');
+        }
+      }
+    }
+
+    return Superhero.create({ ...superheroData, images });
   }
 
   public async deleteSuperhero(nickname: string): Promise<ISuperhero | null> {
     const deletedSuperhero = await Superhero.findOneAndDelete({ nickname });
+
+    if (deletedSuperhero) {
+      const superheroNickname = deletedSuperhero.nickname.replace(/\s+/g, '-').toLowerCase();
+      const destinationPath = path.join(
+        currentDirname,
+        '../../public/images/superheroes',
+        superheroNickname
+      );
+
+      if (fs.existsSync(destinationPath)) {
+        fs.rmSync(destinationPath, { recursive: true, force: true });
+      } else {
+        console.warn(`Directory not found: ${destinationPath}`);
+      }
+    }
+
     return deletedSuperhero;
   }
 

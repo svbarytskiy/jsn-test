@@ -15,7 +15,6 @@ app.use(fileUpload());
 app.use('/api/superheroes', superheroRoutes);
 app.get('/', (req, res) => res.send('API is running'));
 app.use('/images', express.static(path.join(__dirname, '..', 'public', 'images')));
-console.log(path.join(__dirname, '..', 'public', 'images'));
 app.use(handleServerError);
 
 export default app;

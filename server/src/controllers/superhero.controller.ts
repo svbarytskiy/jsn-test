@@ -8,12 +8,6 @@ import {
 } from '@/types/superhero';
 import superheroService from '@/services/superhero.service';
 import { UploadedFile } from 'express-fileupload';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const currentDirname = path.dirname(__filename);
 
 class SuperheroController {
   public getSuperheroes = async (
@@ -51,58 +45,24 @@ class SuperheroController {
   public createSuperhero = async (req: RequestWithFiles, res: Response, next: NextFunction) => {
     try {
       const superheroData: SuperheroRequestBody = req.body;
-      const images: string[] = [];
-      console.log('Received superhero data:', superheroData);
       const superpowersArray: string[] = Array.isArray(superheroData.superpowers)
         ? superheroData.superpowers
         : JSON.parse(superheroData.superpowers);
-      console.log('Parsed superpowers:', superpowersArray);
 
-      if (req.files && typeof req.files === 'object' && req.files.images) {
-        const filesToProcess: UploadedFile[] = Array.isArray(req.files.images)
-          ? req.files.images
-          : [req.files.images];
-        console.log(`Знайдено ${filesToProcess.length} файлів для обробки.`);
+      const newImages: UploadedFile[] =
+        req.files && typeof req.files === 'object' && req.files.images
+          ? Array.isArray(req.files.images)
+            ? req.files.images
+            : [req.files.images]
+          : [];
 
-        for (const file of filesToProcess) {
-          const superheroNickname: string = superheroData.nickname
-            .replace(/\s+/g, '-')
-            .toLowerCase();
-          const destinationPath: string = path.join(
-            currentDirname,
-            '../../public/images/superheroes',
-            superheroNickname
-          );
-          console.log('Призначення файлу:', destinationPath);
-
-          if (!fs.existsSync(destinationPath)) {
-            console.log(`Папка не існує. Створення: ${destinationPath}`);
-            fs.mkdirSync(destinationPath, { recursive: true });
-          }
-
-          const uniqueFileName: string = `${Date.now()}-${file.name.replace(/\s/g, '-')}`;
-          const filePath: string = path.join(destinationPath, uniqueFileName);
-
-          try {
-            await file.mv(filePath);
-            console.log(`Файл "${file.name}" успішно збережено за шляхом: ${filePath}`);
-            images.push(`/images/superheroes/${superheroNickname}/${uniqueFileName}`);
-          } catch (mvError) {
-            console.error(`Помилка під час переміщення файлу "${file.name}":`, mvError);
-            throw new Error('Failed to move file');
-          }
-        }
-      } else {
-        console.log('Немає файлів для обробки.');
-      }
-
-      console.log('all good');
-
-      const newSuperhero = await superheroService.createSuperhero({
-        ...superheroData,
-        superpowers: superpowersArray,
-        images,
-      });
+      const newSuperhero = await superheroService.createSuperhero(
+        {
+          ...superheroData,
+          superpowers: superpowersArray,
+        },
+        newImages
+      );
 
       res.status(201).json({ message: 'Superhero created successfully', data: newSuperhero });
     } catch (error) {
@@ -128,10 +88,6 @@ class SuperheroController {
         superpowers: superpowers,
         catch_phrase: req.body.catch_phrase,
       };
-      console.log('Updating superhero with data:', updatedData);
-      console.log('Images to keep:', imagesToKeep);
-      console.log('New images count:', newImages);
-      console.log('id', id);
       const updatedSuperhero = await superheroService.updateSuperhero({
         id,
         updatedData,
@@ -160,19 +116,6 @@ class SuperheroController {
 
       if (!deletedSuperhero) {
         return res.status(404).json({ message: 'Superhero not found' });
-      }
-
-      const superheroNickname = deletedSuperhero.nickname.replace(/\s+/g, '-').toLowerCase();
-      const destinationPath = path.join(
-        currentDirname,
-        '../../public/images/superheroes',
-        superheroNickname
-      );
-
-      if (fs.existsSync(destinationPath)) {
-        fs.rmSync(destinationPath, { recursive: true, force: true });
-      } else {
-        console.warn(`Directory not found: ${destinationPath}`);
       }
 
       res.status(200).json({ message: 'Superhero deleted successfully', data: deletedSuperhero });
