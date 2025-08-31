@@ -1,0 +1,24 @@
+node_modules/
+npm-debug.log
+.npm/
+
+# Environment variables
+.env
+.env.local
+
+# Back-end specific ignores
+/server/dist/
+/server/build/
+/server/coverage/
+
+# Front-end specific ignores
+/client/dist/
+/client/.next/
+/client/.vite/
+
+# Editor/OS temporary files
+# ========================
+.vscode/
+.idea/
+.DS_Store
+*.log

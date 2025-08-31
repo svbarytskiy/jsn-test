@@ -1,0 +1,108 @@
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import type {
+  Superhero,
+  SuperheroesListResponse,
+  SuperheroListItem,
+} from './types'
+import {
+  createSuperhero,
+  deleteSuperhero,
+  fetchSuperheroByNickname,
+  fetchSuperheroes,
+  updateSuperhero,
+} from './superheroes-thunk'
+
+interface SuperheroesState {
+  list: SuperheroListItem[]
+  selectedSuperhero: Superhero | null
+  loading: boolean
+  error: string | null
+  currentPage: number
+  totalItems: number
+}
+
+const initialState: SuperheroesState = {
+  list: [],
+  selectedSuperhero: null,
+  loading: false,
+  error: null,
+  currentPage: 1,
+  totalItems: 0,
+}
+
+export const superheroesSlice = createSlice({
+  name: 'superheroes',
+  initialState,
+  reducers: {
+    setCurrentPage: (state, action: PayloadAction<number>) => {
+      state.currentPage = action.payload
+    },
+    clearSelectedSuperhero: state => {
+      state.selectedSuperhero = null
+    },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchSuperheroes.pending, state => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(
+        fetchSuperheroes.fulfilled,
+        (state, action: PayloadAction<SuperheroesListResponse>) => {
+          state.loading = false
+          state.list = action.payload.superheroes
+          state.totalItems = action.payload.totalItems
+          state.currentPage = action.payload.currentPage
+        },
+      )
+      .addCase(fetchSuperheroes.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || 'Failed to fetch superheroes'
+      })
+      .addCase(fetchSuperheroByNickname.pending, state => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(
+        fetchSuperheroByNickname.fulfilled,
+        (state, action: PayloadAction<Superhero>) => {
+          state.loading = false
+          state.selectedSuperhero = action.payload
+        },
+      )
+      .addCase(fetchSuperheroByNickname.rejected, (state, action) => {
+        state.loading = false
+        state.error =
+          action.error.message || 'Failed to fetch superhero details'
+      })
+      .addCase(
+        createSuperhero.fulfilled,
+        (state, _action: PayloadAction<Superhero>) => {
+          state.currentPage = 1
+        },
+      )
+      .addCase(
+        updateSuperhero.fulfilled,
+        (state, action: PayloadAction<Superhero>) => {
+          if (state.selectedSuperhero?.nickname === action.payload.nickname) {
+            state.selectedSuperhero = action.payload
+          }
+        },
+      )
+      .addCase(
+        deleteSuperhero.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.list = state.list.filter(sh => sh.nickname !== action.payload)
+          if (state.list.length === 0 && state.currentPage > 1) {
+            state.currentPage -= 1
+          }
+        },
+      )
+  },
+})
+
+export const { setCurrentPage, clearSelectedSuperhero } =
+  superheroesSlice.actions
+
+export default superheroesSlice.reducer
