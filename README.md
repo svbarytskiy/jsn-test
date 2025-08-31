@@ -39,6 +39,7 @@ To get the project up and running locally, follow these steps.
 
 4. Configure environment variables
    You need to set up environment variables for both the backend and frontend. Create a .env file in each of the respective folders.
+
    Backend .env (in the server folder):
 
    PORT=5000
