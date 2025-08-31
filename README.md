@@ -42,11 +42,18 @@ To get the project up and running locally, follow these steps.
    Backend .env (in the server folder):
 
    PORT=5000
-   DB_USER=Tester
-   DB_PASSWORD=j6t0ZtixBvU0ZK64
-   DB_NAME=Superheroes
 
-5. Run the application
+   DB_USER=Tester
+
+   DB_PASSWORD=j6t0ZtixBvU0ZK64
+
+   DB_NAME=Superheroes
+   
+   Client .env (in the client folder):
+
+   VITE_API_URL=http://localhost:5000/api
+
+6. Run the application
    You need to run both the backend and frontend servers in separate terminal windows.
    Start the backend (in the server folder):
 
