@@ -1,6 +1,5 @@
 import type { FC, ReactNode } from 'react'
-import { SidebarTrigger } from '@/shared/components/ui/sidebar'
-import { Separator } from '../ui/separator'
+import { SidebarTrigger, Separator } from '@/shared/components/ui'
 
 interface Props {
   title: string

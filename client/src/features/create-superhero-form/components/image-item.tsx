@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { Button } from '@/shared/components/ui/button'
+import { Button } from '@/shared/components/ui'
 
 interface ImageItemProps {
   file: File

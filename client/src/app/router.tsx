@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { AppSidebar } from '@/shared/components/lauout/app-sidebar'
-import { SidebarProvider } from '@/shared/components/ui/sidebar'
+import { AppSidebar, PageLayout } from '@/shared/components/layout'
+import { SidebarProvider } from '@/shared/components/ui'
 import { APP_ROUTES } from '@/shared/constants/routes'
-import { PageLayout } from '@/shared/components/lauout/page-layout'
+import { ErrorBoundary } from '@/shared/components'
 
 const AppRoutes = () => {
   return (
@@ -10,19 +10,21 @@ const AppRoutes = () => {
       <SidebarProvider>
         <AppSidebar />
         <div className="flex w-full">
-          <Routes>
-            {APP_ROUTES.map(route => (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={
-                  <PageLayout title={route.title}>
-                    <route.component />
-                  </PageLayout>
-                }
-              />
-            ))}
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              {APP_ROUTES.map(route => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={
+                    <PageLayout title={route.title}>
+                      <route.component />
+                    </PageLayout>
+                  }
+                />
+              ))}
+            </Routes>
+          </ErrorBoundary>
         </div>
       </SidebarProvider>
     </Router>

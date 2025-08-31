@@ -32,8 +32,8 @@ export const SuperheroList: FC = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-80 text-base flex justify-center items-center font-medium">
-        <Loader />
+      <div className="flex h-80 w-full items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     )
   }

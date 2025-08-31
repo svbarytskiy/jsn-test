@@ -13,3 +13,10 @@ export interface SuperheroListItem {
   nickname: string
   images: string
 }
+
+export interface SuperheroesListResponse {
+  superheroes: SuperheroListItem[]
+  totalPages: number
+  totalItems: number
+  currentPage: number
+}

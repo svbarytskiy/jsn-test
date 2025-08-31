@@ -7,7 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/shared/components/ui/sidebar'
+} from '@/shared/components/ui'
 import { Link } from 'react-router-dom'
 import { SIDEBAR_ITEMS } from '@/shared/constants/sidebar-tems'
 

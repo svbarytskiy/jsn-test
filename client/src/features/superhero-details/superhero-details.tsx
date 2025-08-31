@@ -35,8 +35,6 @@ export const SuperheroDetails: FC = () => {
     const resultAction = await dispatch(deleteSuperhero(nickname as string))
     if (deleteSuperhero.fulfilled.match(resultAction)) {
       navigate('/')
-    } else {
-      console.error('Failed to delete superhero:', resultAction.payload)
     }
   }
 

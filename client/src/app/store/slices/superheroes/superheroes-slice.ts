@@ -1,5 +1,9 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { Superhero, SuperheroListItem } from './types'
+import type {
+  Superhero,
+  SuperheroesListResponse,
+  SuperheroListItem,
+} from './types'
 import {
   createSuperhero,
   deleteSuperhero,
@@ -7,13 +11,6 @@ import {
   fetchSuperheroes,
   updateSuperhero,
 } from './superheroes-thunk'
-
-interface SuperheroesListResponse {
-  superheroes: SuperheroListItem[]
-  totalPages: number
-  totalItems: number
-  currentPage: number
-}
 
 interface SuperheroesState {
   list: SuperheroListItem[]
