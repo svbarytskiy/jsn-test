@@ -13,14 +13,7 @@ router.get(
 );
 
 router.post('/', SuperheroController.createSuperhero.bind(SuperheroController) as RequestHandler);
-
-router.put(
-  '/:nickname',
-  SuperheroController.updateSuperhero.bind(
-    SuperheroController
-  ) as RequestHandler<SuperheroRequestParams>
-);
-
+router.put('/:id', SuperheroController.updateSuperhero.bind(SuperheroController) as RequestHandler);
 router.delete(
   '/:nickname',
   SuperheroController.deleteSuperhero.bind(

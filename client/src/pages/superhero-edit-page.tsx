@@ -1,3 +1,9 @@
+import { EditSuperheroForm } from '@/features/edit-superhero-form'
+
 export const SuperheroEditPage = () => {
-  return <div>Superhero Edit Page</div>
+  return (
+    <section className="w-full flex justify-center flex-col">
+      <EditSuperheroForm />
+    </section>
+  )
 }

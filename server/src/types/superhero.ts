@@ -38,3 +38,17 @@ export interface RequestWithFilesAndBody
   };
   files?: FileArray;
 }
+
+export interface UpdateRequest extends Request {
+  files?: {
+    new_images?: UploadedFile | UploadedFile[];
+  };
+  body: {
+    nickname?: string;
+    real_name?: string;
+    origin_description?: string;
+    superpowers?: string;
+    catch_phrase?: string;
+    existing_images?: string;
+  };
+}

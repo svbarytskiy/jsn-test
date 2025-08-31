@@ -4,7 +4,7 @@ import {
   SuperheroRequestBody,
   PaginationRequestQuery,
   RequestWithFiles,
-  RequestWithFilesAndBody,
+  UpdateRequest,
 } from '@/types/superhero';
 import superheroService from '@/services/superhero.service';
 import { UploadedFile } from 'express-fileupload';
@@ -110,22 +110,30 @@ class SuperheroController {
     }
   };
 
-  public updateSuperhero = async (
-    req: RequestWithFilesAndBody,
-    res: Response,
-    next: NextFunction
-  ) => {
+  public updateSuperhero = async (req: UpdateRequest, res: Response, next: NextFunction) => {
     try {
-      const { nickname } = req.params;
-      const { imagesToKeep, ...updatedData } = req.body;
-      let newImages: UploadedFile[] = [];
+      const { id } = req.params;
+      const imagesToKeep = req.body.existing_images ? JSON.parse(req.body.existing_images) : [];
+      const superpowers = req.body.superpowers ? JSON.parse(req.body.superpowers) : [];
+      const newImages = req.files?.new_images
+        ? Array.isArray(req.files.new_images)
+          ? req.files.new_images
+          : [req.files.new_images]
+        : [];
 
-      if (req.files && req.files.images) {
-        newImages = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
-      }
-
+      const updatedData = {
+        nickname: req.body.nickname,
+        real_name: req.body.real_name,
+        origin_description: req.body.origin_description,
+        superpowers: superpowers,
+        catch_phrase: req.body.catch_phrase,
+      };
+      console.log('Updating superhero with data:', updatedData);
+      console.log('Images to keep:', imagesToKeep);
+      console.log('New images count:', newImages);
+      console.log('id', id);
       const updatedSuperhero = await superheroService.updateSuperhero({
-        nickname,
+        id,
         updatedData,
         imagesToKeep,
         newImages,

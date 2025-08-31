@@ -3,6 +3,10 @@ import { ISuperhero } from '@/types/superhero';
 import path from 'path';
 import fs from 'fs';
 import { UploadedFile } from 'express-fileupload';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const currentDirname = path.dirname(__filename);
 
 class SuperheroService {
   public async getSuperheroes(page: number, limit: number) {
@@ -45,20 +49,27 @@ class SuperheroService {
   }
 
   public async updateSuperhero({
-    nickname,
+    id,
     updatedData,
     imagesToKeep = [],
     newImages = [],
   }: {
-    nickname: string;
+    id: string;
     updatedData: Partial<ISuperhero>;
     imagesToKeep?: string[];
     newImages?: UploadedFile[];
   }) {
-    const existingSuperhero = await Superhero.findOne({ nickname: nickname });
+    const existingSuperhero = await Superhero.findOne({ _id: id });
 
     if (!existingSuperhero) {
       return null;
+    }
+
+    if (updatedData.nickname && updatedData.nickname !== existingSuperhero.nickname) {
+      const isNicknameTaken = await Superhero.findOne({ nickname: updatedData.nickname });
+      if (isNicknameTaken) {
+        throw new Error('This nickname is already taken.');
+      }
     }
 
     if (existingSuperhero.images) {
@@ -67,20 +78,31 @@ class SuperheroService {
       );
 
       imagesToDelete.forEach((imagePath) => {
-        const fullPath = path.join(__dirname, '../../public', imagePath);
+        const fullPath = path.join(currentDirname, '../../public', imagePath);
         if (fs.existsSync(fullPath)) {
           fs.unlinkSync(fullPath);
         }
       });
     }
 
+    const oldNickname = existingSuperhero.nickname.replace(/\s+/g, '-').toLowerCase();
+    const newNickname = (updatedData.nickname || existingSuperhero.nickname)
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+
+    if (oldNickname !== newNickname) {
+      const oldPath = path.join(currentDirname, '../../public/images/superheroes', oldNickname);
+      const newPath = path.join(currentDirname, '../../public/images/superheroes', newNickname);
+      if (fs.existsSync(oldPath)) {
+        fs.renameSync(oldPath, newPath);
+      }
+    }
+
     const newImagePaths: string[] = [];
     if (newImages.length > 0) {
-      const superheroNickname = (updatedData.nickname || existingSuperhero.nickname)
-        .replace(/\s+/g, '-')
-        .toLowerCase();
+      const superheroNickname = newNickname;
       const destinationPath = path.join(
-        __dirname,
+        currentDirname,
         '../../public/images/superheroes',
         superheroNickname
       );
@@ -97,10 +119,14 @@ class SuperheroService {
       }
     }
 
-    const finalImages = [...(imagesToKeep || []), ...newImagePaths];
+    const updatedImagesToKeep = imagesToKeep.map((imagePath) =>
+      imagePath.replace(`/images/superheroes/${oldNickname}`, `/images/superheroes/${newNickname}`)
+    );
+
+    const finalImages = [...(updatedImagesToKeep || []), ...newImagePaths];
 
     return Superhero.findOneAndUpdate(
-      { nickname },
+      { _id: id },
       { ...updatedData, images: finalImages },
       { new: true }
     );

@@ -73,7 +73,7 @@ export const SuperheroDetails: FC = () => {
           </Button>
         </Link>
         <div className="flex space-x-2">
-          <Link to={`/superheroes/${selectedSuperhero.nickname}/edit`}>
+          <Link to={`/edit/${selectedSuperhero.nickname}`}>
             <Button
               variant="outline"
               size="icon"

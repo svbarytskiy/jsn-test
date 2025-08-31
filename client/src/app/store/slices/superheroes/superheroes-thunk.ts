@@ -37,15 +37,9 @@ export const createSuperhero = createAsyncThunk(
 
 export const updateSuperhero = createAsyncThunk(
   'superheroes/update-superhero',
-  async ({
-    nickname,
-    superheroData,
-  }: {
-    nickname: string
-    superheroData: FormData
-  }) => {
+  async ({ id, superheroData }: { id: string; superheroData: FormData }) => {
     const response = await axiosInstance.put(
-      `/superheroes/${nickname}`,
+      `/superheroes/${id}`,
       superheroData,
     )
     return response.data as Superhero
